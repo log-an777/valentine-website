@@ -1,0 +1,1055 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>💘 Valentine Surprise</title>
+  <style>
+    :root{
+      --bg1:#ffdde1; --bg2:#ee9ca7;
+      --card: rgba(255,255,255,.78);
+      --text:#2b2b2b;
+      --accent:#ff4d6d;
+      --accent2:#ff8fab;
+      --shadow: 0 18px 60px rgba(0,0,0,.18);
+      --radius: 22px;
+      --ok:#0f8a4b;
+      --bad:#b00020;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100svh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", Arial, sans-serif;
+      color:var(--text);
+      overflow-x:hidden;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,.65), transparent 60%),
+        radial-gradient(900px 700px at 80% 20%, rgba(255,255,255,.45), transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+    }
+
+    #hearts{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      min-height:100svh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .card{
+      width:min(900px, 100%);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .sparkle{
+      position:absolute;
+      inset:-2px;
+      pointer-events:none;
+      background:
+        radial-gradient(10px 10px at 18% 22%, rgba(255,255,255,.9), transparent 65%),
+        radial-gradient(12px 12px at 78% 28%, rgba(255,255,255,.85), transparent 65%),
+        radial-gradient(9px 9px at 62% 72%, rgba(255,255,255,.85), transparent 65%),
+        radial-gradient(11px 11px at 28% 78%, rgba(255,255,255,.8), transparent 65%);
+      opacity:.55;
+      animation: twinkle 3.8s ease-in-out infinite alternate;
+      mix-blend-mode: screen;
+    }
+    @keyframes twinkle{ from{opacity:.35} to{opacity:.75} }
+
+    header{
+      padding:26px 26px 14px 26px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .brand .title{
+      font-size: clamp(22px, 2.6vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height:1.1;
+    }
+    .brand .sub{
+      font-size: 14px;
+      opacity:.85;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.6);
+      border:1px solid rgba(255,255,255,.7);
+      font-size:13px;
+      opacity:.9;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .pill b{ color:var(--accent); }
+
+    main{
+      padding: 8px 26px 26px 26px;
+    }
+
+    .panel{
+      background: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .row{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    label{
+      display:block;
+      font-size:13px;
+      opacity:.9;
+      margin: 10px 0 6px 0;
+    }
+
+    input[type="text"], input[type="password"]{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.85);
+      outline:none;
+      font-size: 14px;
+    }
+    input:focus{
+      border-color: rgba(255,77,109,.55);
+      box-shadow: 0 0 0 4px rgba(255,77,109,.12);
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius: 999px;
+      padding: 12px 16px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:14px;
+      transition: transform .08s ease, box-shadow .2s ease, opacity .2s ease;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color:white;
+      box-shadow: 0 10px 26px rgba(255,77,109,.25);
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(0,0,0,.10);
+      color: var(--text);
+    }
+    .btn:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
+    .hint{
+      margin-top:10px;
+      font-size: 13px;
+      opacity:.85;
+    }
+    .error{
+      margin-top:10px;
+      font-size: 13px;
+      color: var(--bad);
+      font-weight: 800;
+      display:none; /* ✅ 기본은 숨김 */
+    }
+    .ok{
+      margin-top:10px;
+      font-size: 13px;
+      color: var(--ok);
+      font-weight: 800;
+      display:none;
+    }
+
+    .progress{
+      height:10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.08);
+      overflow:hidden;
+      margin: 14px 0 18px 0;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+
+    .q-title{
+      font-size: clamp(18px, 2.2vw, 24px);
+      font-weight: 900;
+      letter-spacing:-0.02em;
+      margin: 0 0 10px 0;
+      line-height:1.2;
+    }
+    .q-sub{
+      margin: 0 0 14px 0;
+      opacity:.88;
+      font-size: 14px;
+    }
+
+    .options{
+      display:grid;
+      gap:10px;
+    }
+    .opt{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.75);
+      cursor:pointer;
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .opt:hover{
+      border-color: rgba(255,77,109,.35);
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      transform: translateY(-1px);
+    }
+    .opt input{ width:auto; margin-top:3px; }
+    .opt .txt{ flex:1; }
+    .opt .txt b{ display:block; margin-bottom:2px; }
+    .opt small{ opacity:.8; }
+
+    /* Image quiz cards */
+    .img-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:12px;
+    }
+    .img-card{
+      border-radius: 18px;
+      overflow:hidden;
+      border:2px solid rgba(0,0,0,.08);
+      background: rgba(255,255,255,.65);
+      cursor:pointer;
+      position:relative;
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+      min-height: 180px;
+    }
+    .img-card:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      border-color: rgba(255,77,109,.35);
+    }
+    .img-card.selected{
+      border-color: rgba(255,77,109,.65);
+      box-shadow: 0 10px 24px rgba(255,77,109,.18);
+    }
+    .img-card img{
+      width:100%;
+      height: 210px;
+      object-fit: cover;
+      display:block;
+      background: rgba(255,255,255,.9);
+    }
+    .img-cap{
+      padding:10px 12px;
+      font-weight:800;
+      opacity:.92;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+    .tick{
+      width:22px; height:22px;
+      border-radius: 999px;
+      border:2px solid rgba(0,0,0,.15);
+      display:grid;
+      place-items:center;
+      font-size: 14px;
+      opacity:.9;
+      background: rgba(255,255,255,.75);
+    }
+    .img-card.selected .tick{
+      border-color: rgba(255,77,109,.65);
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+
+    .nav{
+      margin-top: 16px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .center{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      flex-direction:column;
+      gap:12px;
+      padding: 18px;
+    }
+
+    .big{
+      font-size: clamp(28px, 3.6vw, 44px);
+      font-weight: 900;
+      letter-spacing:-0.03em;
+      line-height:1.05;
+    }
+    .love-note{
+      font-size: 15px;
+      opacity:.9;
+      max-width: 52ch;
+    }
+
+    /* Final question area */
+    .final-area{
+      position:relative;
+      min-height: 260px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:14px;
+      padding: 18px;
+    }
+    .final-btns{
+      position:relative;
+      width:min(520px, 100%);
+      height: 140px;
+      margin-top: 6px;
+    }
+    #yesBtn{
+      position:absolute;
+      left: 20%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+    }
+    #noBtn{
+      position:absolute;
+      left: 78%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Gifts */
+    .gift-grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:12px;
+      width:min(760px, 100%);
+      margin-top: 6px;
+    }
+    .gift{
+      border-radius: 18px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(0,0,0,.10);
+      padding: 14px;
+      cursor:pointer;
+      transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+      position:relative;
+      min-height: 150px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+    .gift:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(0,0,0,.08);
+      border-color: rgba(255,77,109,.35);
+    }
+    .gift .box-emoji{
+      font-size: 46px;
+      filter: drop-shadow(0 10px 12px rgba(0,0,0,.10));
+    }
+    .gift .label{
+      font-weight: 900;
+      opacity:.9;
+    }
+    .gift .reveal{
+      font-size: 32px;
+      font-weight: 900;
+      display:none;
+    }
+    .gift.open .reveal{ display:block; }
+    .gift.open .box-emoji{ display:none; }
+
+    .footer{
+      padding: 0 26px 22px 26px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      opacity:.9;
+      font-size:12px;
+    }
+
+    .hidden{ display:none !important; }
+
+    .pop{
+      position:fixed;
+      pointer-events:none;
+      z-index:99;
+      font-size:18px;
+      animation: pop 1.2s ease forwards;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.12));
+    }
+    @keyframes pop{
+      0%{ transform: translate(-50%,-50%) scale(.8); opacity:0; }
+      15%{ opacity:1; }
+      100%{ transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.4); opacity:0; }
+    }
+
+    @media (max-width: 720px){
+      .img-grid{ grid-template-columns: 1fr; }
+      .img-card img{ height: 220px; }
+      .gift-grid{ grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 520px){
+      header{ flex-direction:column; align-items:flex-start; }
+      .final-btns{ height: 160px; }
+      #yesBtn{ left: 30%; }
+      #noBtn{ left: 70%; }
+    }
+
+        .field{
+      width:100%;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(0,0,0,.10);
+      background: rgba(255,255,255,.85);
+      outline: none;
+      font-size: 16px;
+      height: 56px;
+    }
+
+    .field:focus{
+      border-color: rgba(255,77,109,.55);
+      box-shadow: 0 0 0 4px rgba(255,77,109,.12);
+    }
+  </style>
+</head>
+
+<body>
+<canvas id="hearts"></canvas>
+
+<div class="wrap">
+  <div class="card" role="application" aria-label="Valentine surprise website">
+    <div class="sparkle"></div>
+
+    <header>
+      <div class="brand">
+        <div class="title">💘 VALENTINE DAY (by Logan)</div>
+        <div class="sub">* Only Julia can ENTER *</div>
+      </div>
+      <div class="pill">🔒 Access: <b>Secret</b> · 🌷 Romantic Mode: <b>On</b></div>
+    </header>
+
+    <main>
+      <!-- LOGIN -->
+      <section id="loginView" class="panel"> 
+        <div class="q-title">Secret Login to Enter✨</div>
+        <p class="q-sub">Try entering the correct ID and password :)</p>
+
+        <div class="row">
+          <div style="flex:1; min-width:220px;">
+            <label for="idInput">ID</label>
+            <input id="idInput"class="field" autocomplete="username" placeholder="Name" />
+          </div>
+          <div style="flex:1; min-width:220px;">
+            <label for="pwInput">Password</label>
+            <input id="pwInput" class="field" type="password" autocomplete="current-password" placeholder="••••" />
+          </div>
+        </div>
+
+        <div class="nav">
+          <button id="loginBtn" class="btn primary">Enter 💗</button>
+          <button id="hintBtn" class="btn ghost" type="button">Show hint</button>
+        </div>
+
+        <div class="hint" id="hintBox" style="display:none;">
+          힌트: ID = 세상에서 가장 멋진 남자친구 이름(영어로) / PW = 우리가 Dating 시작한 날 (MM/DD) 😌
+        </div>
+        <div class="error" id="loginErr">Oops… the ID or password doesn’t match.</div>
+      </section>
+
+      <!-- QUIZ -->
+      <section id="quizView" class="panel hidden">
+        <div class="progress" aria-label="progress">
+          <div class="bar" id="bar"></div>
+        </div>
+
+        <div class="q-title" id="qTitle"></div>
+        <p class="q-sub" id="qSub"></p>
+
+        <div id="options"></div>
+
+        <div class="error" id="quizErr"></div>
+        <div class="ok" id="quizOk">정답! 💗</div>
+
+        <div class="nav">
+          <button id="backBtn" class="btn ghost" type="button">← Back</button>
+          <button id="nextBtn" class="btn primary" type="button">Next →</button>
+        </div>
+      </section>
+
+      <!-- FINAL -->
+      <section id="finalView" class="panel hidden">
+        <div class="final-area">
+          <div class="big">Will you be my valentine? 💝</div>
+          <div class="love-note" id="finalNote">
+          </div>
+
+          <div class="final-btns" id="finalBtns">
+            <button id="yesBtn" class="btn primary" type="button">Yes 💗</button>
+            <button id="noBtn" class="btn ghost" type="button">No 🙈</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- GIFTS -->
+      <section id="giftView" class="panel hidden">
+        <div class="center">
+          <div class="big">Surprise gift!! 🎁</div>
+          <div class="love-note">Tap each of the three boxes one by one :)</div>
+
+          <div class="gift-grid">
+            <div class="gift" data-gift="🍫">
+              <div class="box-emoji">🎁</div>
+              <div class="label">Gift Box 1</div>
+              <div class="reveal">🍫</div>
+            </div>
+            <div class="gift" data-gift="🎵🎶">
+              <div class="box-emoji">🎁</div>
+              <div class="label">Gift Box 2</div>
+              <div class="reveal">🎵🎶</div>
+            </div>
+            <div class="gift" data-gift="❓">
+              <div class="box-emoji">🎁</div>
+              <div class="label">Gift Box 3</div>
+              <div class="reveal">❓</div>
+            </div>
+          </div>
+
+          <button id="restartBtn2" class="btn ghost" type="button">Go back to the start</button>
+        </div>
+      </section>
+    </main>
+
+    <div class="footer">
+      <div>Made with 💗 for someone special</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /**********************
+   *  CONFIG (EDIT ME!)
+   **********************/
+  const VALID_ID = "Logan";
+  const VALID_PW = "1122";
+
+  // ✅ 이미지 경로: VALENTINE.html과 같은 폴더에 images/가 있을 때
+  const IMG_PATHS = [
+    "./images/julia1.jpg",
+    "./images/julia2.jpg",
+    "./images/julia3.jpg",
+  ];
+
+  /**********************
+   *  QUESTIONS (3 quizzes)
+   *  - Q1/Q2: single-choice, must be correct to proceed
+   *  - Q3: image multi-select, MUST select ALL 3 to be correct
+   **********************/
+  const questions = [
+    {
+      type: "single",
+      title: "1) What was the name of the first café we went to together?",
+      choices: [
+        { t: "Williams Fresh Cafe" },
+        { t: "The Bingsu" },
+        { t: "Coffee Brick Canada Inc" },
+      ],
+      correctIndex: 2, // ✅ Coffee Brick
+    },
+    {
+      type: "single",
+      title: "2) As of Valentine’s Day (February 14), what day of dating is it for us today?",
+      choices: [
+        { t: "Day 85" },
+        { t: "Day 86" },
+        { t: "Day 87" },
+      ],
+      correctIndex: 0, // ✅ 85
+    },
+    {
+      type: "images_all",
+      title: "3) Among the Julias in these photos, which Julia does Logan love the most?",
+      images: [
+        { label: "Julia 1", src: IMG_PATHS[0] },
+        { label: "Julia 2", src: IMG_PATHS[1] },
+        { label: "Julia 3", src: IMG_PATHS[2] },
+      ],
+      mustSelectAll: true,
+    }
+  ];
+
+  /**********************
+   *  STATE & ELEMENTS
+   **********************/
+  const loginView = document.getElementById("loginView");
+  const quizView  = document.getElementById("quizView");
+  const finalView = document.getElementById("finalView");
+  const giftView  = document.getElementById("giftView");
+
+  const idInput = document.getElementById("idInput");
+  const pwInput = document.getElementById("pwInput");
+  const loginBtn = document.getElementById("loginBtn");
+  const loginErr = document.getElementById("loginErr");
+  const hintBtn = document.getElementById("hintBtn");
+  const hintBox = document.getElementById("hintBox");
+
+  const qTitle = document.getElementById("qTitle");
+  const qSub   = document.getElementById("qSub");
+  const optionsEl = document.getElementById("options");
+  const nextBtn = document.getElementById("nextBtn");
+  const backBtn = document.getElementById("backBtn");
+  const bar = document.getElementById("bar");
+  const quizErr = document.getElementById("quizErr");
+  const quizOk  = document.getElementById("quizOk");
+
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn  = document.getElementById("noBtn");
+  const finalBtns = document.getElementById("finalBtns");
+
+  const restartBtn2 = document.getElementById("restartBtn2");
+
+  let idx = 0;
+
+  // answers:
+  // - single: number|null
+  // - images_all: Set of selected indices
+  const answers = [
+    null,
+    null,
+    new Set(),
+  ];
+
+  /**********************
+   *  HELPERS: view switching
+   **********************/
+  function showOnly(view){
+    [loginView, quizView, finalView, giftView].forEach(v => v.classList.add("hidden"));
+    view.classList.remove("hidden");
+  }
+
+  function resetAll(){
+    idx = 0;
+    answers[0] = null;
+    answers[1] = null;
+    answers[2] = new Set();
+    idInput.value = "";
+    pwInput.value = "";
+    loginErr.style.display = "none";
+    hintBox.style.display = "none";
+    quizErr.style.display = "none";
+    quizOk.style.display = "none";
+    showOnly(loginView);
+    popHearts(8);
+  }
+
+  /**********************
+   *  LOGIN
+   **********************/
+  hintBtn.addEventListener("click", () => {
+    hintBox.style.display = (hintBox.style.display === "none") ? "block" : "none";
+  });
+
+  function tryLogin(){
+    const id = (idInput.value || "").trim();
+    const pw = (pwInput.value || "").trim();
+    const ok = (id === VALID_ID && pw === VALID_PW);
+
+    loginErr.style.display = ok ? "none" : "block";
+    if(ok){
+      popHearts(10);
+      idx = 0;
+      showOnly(quizView);
+      renderQuestion();
+    } else {
+      popHearts(2);
+    }
+  }
+
+  loginBtn.addEventListener("click", tryLogin);
+  [idInput, pwInput].forEach(el => el.addEventListener("keydown", (e) => {
+    if(e.key === "Enter") tryLogin();
+  }));
+
+  /**********************
+   *  QUIZ RENDER
+   **********************/
+  function setProgress(){
+    const pct = Math.round((idx / questions.length) * 100);
+    bar.style.width = pct + "%";
+  }
+
+  function clearMessages(){
+    quizErr.style.display = "none";
+    quizOk.style.display  = "none";
+    quizErr.textContent = "";
+  }
+
+  function renderSingle(q){
+    const wrap = document.createElement("div");
+    wrap.className = "options";
+
+    q.choices.forEach((c, i) => {
+      const id = `q${idx}_opt${i}`;
+
+      const label = document.createElement("label");
+      label.className = "opt";
+      label.setAttribute("for", id);
+
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = `q${idx}`;
+      radio.id = id;
+      radio.checked = (answers[idx] === i);
+
+      radio.addEventListener("change", () => {
+        answers[idx] = i;
+        clearMessages();
+        popHearts(3);
+      });
+
+      const txt = document.createElement("div");
+      txt.className = "txt";
+      txt.innerHTML = `<b>${c.t}</b>`;
+
+      label.appendChild(radio);
+      label.appendChild(txt);
+      wrap.appendChild(label);
+    });
+
+    return wrap;
+  }
+
+  function renderImagesAll(q){
+    const grid = document.createElement("div");
+    grid.className = "img-grid";
+
+    q.images.forEach((img, i) => {
+      const card = document.createElement("div");
+      card.className = "img-card";
+      if(answers[idx].has(i)) card.classList.add("selected");
+
+      const image = document.createElement("img");
+      image.src = img.src;
+      image.alt = img.label;
+
+      // ✅ 이미지 로드 실패 시 원인 보이도록 (콘솔도 확인 가능)
+      image.addEventListener("error", () => {
+        image.alt = `${img.label} (이미지 로드 실패: ${img.src})`;
+      });
+
+      const cap = document.createElement("div");
+      cap.className = "img-cap";
+      cap.innerHTML = `<span>${img.label}</span><span class="tick">✓</span>`;
+
+      card.appendChild(image);
+      card.appendChild(cap);
+
+      card.addEventListener("click", () => {
+        clearMessages();
+        if(answers[idx].has(i)) answers[idx].delete(i);
+        else answers[idx].add(i);
+
+        card.classList.toggle("selected");
+        popHearts(2);
+      });
+
+      grid.appendChild(card);
+    });
+
+    return grid;
+  }
+
+  function renderQuestion(){
+    const q = questions[idx];
+    qTitle.textContent = q.title;
+    qSub.textContent = q.sub;
+
+    setProgress();
+    clearMessages();
+
+    backBtn.disabled = (idx === 0);
+
+    optionsEl.innerHTML = "";
+    if(q.type === "single"){
+      optionsEl.appendChild(renderSingle(q));
+    } else {
+      optionsEl.appendChild(renderImagesAll(q));
+    }
+  }
+
+  function validateCurrent(){
+    const q = questions[idx];
+
+    // ✅ "아무것도 안 했는데 틀렸어" 방지: 선택 안 했으면 '선택해줘'만
+    if(q.type === "single"){
+      if(answers[idx] === null){
+        return { ok:false, msg:"아직 선택을 안 했어 😳 하나 골라줘!" };
+      }
+      if(answers[idx] !== q.correctIndex){
+        return { ok:false, msg:"That’s not it 🥺 Try again!" };
+      }
+      return { ok:true };
+    }
+
+    // images_all
+    const selectedCount = answers[idx].size;
+    if(selectedCount === 0){
+      return { ok:false, msg:"사진을 눌러서 선택해줘 😊 (3개 모두!)" };
+    }
+    if(q.mustSelectAll && selectedCount !== q.images.length){
+      return { ok:false, msg:"That’s not it 🥺 Try again!" };
+    }
+    return { ok:true };
+  }
+
+  nextBtn.addEventListener("click", () => {
+    const result = validateCurrent();
+
+    if(!result.ok){
+      quizOk.style.display = "none";
+      quizErr.textContent = result.msg;
+      quizErr.style.display = "block";
+      popHearts(1);
+      return;
+    }
+
+    // correct
+    quizErr.style.display = "none";
+    quizOk.style.display = "block";
+    popHearts(6);
+
+    setTimeout(() => {
+      quizOk.style.display = "none";
+      if(idx < questions.length - 1){
+        idx++;
+        renderQuestion();
+      } else {
+        bar.style.width = "100%";
+        popHearts(12);
+        showOnly(finalView);
+        placeNoButton(0.78, 0.52);
+      }
+    }, 400);
+  });
+
+  backBtn.addEventListener("click", () => {
+    if(idx > 0){
+      idx--;
+      renderQuestion();
+    }
+  });
+
+  /**********************
+   *  FINAL
+   **********************/
+  yesBtn.addEventListener("click", () => {
+    popHearts(24);
+    showOnly(giftView);
+  });
+
+  // No button escapes
+  function placeNoButton(nx, ny){
+    const box = finalBtns.getBoundingClientRect();
+    const pad = 16;
+
+    const x = pad + nx * (box.width - 2*pad);
+    const y = pad + ny * (box.height - 2*pad);
+
+    const clampedX = Math.max(pad, Math.min(box.width - pad, x));
+    const clampedY = Math.max(pad, Math.min(box.height - pad, y));
+
+    noBtn.style.left = clampedX + "px";
+    noBtn.style.top  = clampedY + "px";
+    noBtn.style.transform = "translate(-50%, -50%)";
+  }
+
+  function escapeNo(){
+    let nx, ny;
+    for(let tries=0; tries<12; tries++){
+      nx = Math.random()*0.92 + 0.04;
+      ny = Math.random()*0.70 + 0.20;
+      const distToYes = Math.hypot(nx-0.20, ny-0.52);
+      if(distToYes > 0.35) break;
+    }
+    placeNoButton(nx, ny);
+    popHearts(4);
+  }
+
+  noBtn.addEventListener("mouseenter", escapeNo);
+  noBtn.addEventListener("pointerdown", (e) => { e.preventDefault(); escapeNo(); });
+  noBtn.addEventListener("click", (e) => { e.preventDefault(); escapeNo(); });
+
+  window.addEventListener("resize", () => {
+    if(!finalView.classList.contains("hidden")){
+      placeNoButton(0.78, 0.52);
+    }
+  });
+
+  /**********************
+   *  GIFTS
+   **********************/
+  document.querySelectorAll(".gift").forEach(el => {
+    el.addEventListener("click", () => {
+      if(el.classList.contains("open")) return;
+      el.classList.add("open");
+      popHearts(10);
+    });
+  });
+
+  restartBtn2.addEventListener("click", resetAll);
+
+  /**********************
+   *  HEART POP EFFECT
+   **********************/
+  function popHearts(n){
+    const emojis = ["💗","💖","💘","💝","💕","💞"];
+    for(let i=0;i<n;i++){
+      const el = document.createElement("div");
+      el.className = "pop";
+      el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+      el.style.setProperty("--dx", (Math.random()*220 - 110) + "px");
+      el.style.setProperty("--dy", (-Math.random()*240 - 60) + "px");
+      el.style.fontSize = (14 + Math.random()*18) + "px";
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1300);
+    }
+  }
+
+  /**********************
+   *  BACKGROUND FLOATING HEARTS (CANVAS)
+   **********************/
+  const canvas = document.getElementById("hearts");
+  const ctx = canvas.getContext("2d");
+  let W, H, hearts;
+
+  function resize(){
+    W = canvas.width  = window.innerWidth * devicePixelRatio;
+    H = canvas.height = window.innerHeight * devicePixelRatio;
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+  }
+  window.addEventListener("resize", () => { resize(); initHearts(); });
+
+  function heartPath(x,y,s){
+    ctx.beginPath();
+    const topCurveHeight = s * 0.3;
+    ctx.moveTo(x, y + topCurveHeight);
+    ctx.bezierCurveTo(x, y, x - s/2, y, x - s/2, y + topCurveHeight);
+    ctx.bezierCurveTo(x - s/2, y + (s + topCurveHeight)/2, x, y + (s + topCurveHeight)/2, x, y + s);
+    ctx.bezierCurveTo(x, y + (s + topCurveHeight)/2, x + s/2, y + (s + topCurveHeight)/2, x + s/2, y + topCurveHeight);
+    ctx.bezierCurveTo(x + s/2, y, x, y, x, y + topCurveHeight);
+    ctx.closePath();
+  }
+
+  function initHearts(){
+    const count = Math.floor(Math.max(26, window.innerWidth/28));
+    hearts = Array.from({length: count}).map(() => ({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      s: (8 + Math.random()*18) * devicePixelRatio,
+      vy: (0.25 + Math.random()*0.7) * devicePixelRatio,
+      vx: (Math.random()*0.25 - 0.125) * devicePixelRatio,
+      a: 0.22 + Math.random()*0.28
+    }));
+  }
+
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+
+    for(const p of hearts){
+      p.y -= p.vy;
+      p.x += p.vx;
+
+      if(p.y < -40*devicePixelRatio) {
+        p.y = H + 40*devicePixelRatio;
+        p.x = Math.random()*W;
+      }
+      if(p.x < -40*devicePixelRatio) p.x = W + 40*devicePixelRatio;
+      if(p.x > W + 40*devicePixelRatio) p.x = -40*devicePixelRatio;
+
+      ctx.globalAlpha = p.a;
+      const g = ctx.createLinearGradient(p.x - p.s, p.y - p.s, p.x + p.s, p.y + p.s);
+      g.addColorStop(0, "rgba(255,77,109,0.95)");
+      g.addColorStop(1, "rgba(255,143,171,0.95)");
+      ctx.fillStyle = g;
+
+      heartPath(p.x, p.y, p.s);
+      ctx.fill();
+    }
+    ctx.restore();
+    requestAnimationFrame(tick);
+  }
+
+  resize();
+  initHearts();
+  tick();
+  setTimeout(() => popHearts(6), 400);
+
+
+</script>
+</body>
+</html>
+
+
